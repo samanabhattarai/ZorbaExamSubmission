@@ -7,7 +7,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -42,30 +44,30 @@ public class WriteFromJdbcToExcelDemo {
 
             statement = connection.createStatement();
 
-            // drop tables if already exist
-            String dropTable = "drop table if exists vehicle_details, customer_details";
-            statement.execute(dropTable);
-
-            //create table customer_details
-
-            String createCustomerDetails = "create table customer_details (cust_id int, cust_name varchar(255), cust_location varchar(255), cust_email varchar(50), cust_mobile bigint, v_hire_date datetime)";
-            statement.execute(createCustomerDetails);
-
-
-            //alter table customer_details
-            String addPrimaryKeyCustomerDetails = "alter table customer_details add primary key(cust_id)";
-            statement.executeUpdate(addPrimaryKeyCustomerDetails);
-
-            //create another table vehicle_details
-            String createVehicle = "create table vehicle_details (v_id int(6), v_name varchar(255), v_registration varchar(255), v_reg_date datetime, customer_id int(5))";
-            statement.execute(createVehicle);
-
-            //alter table vehicle_details for primary key
-            String addPrimaryKeyVehicle = "alter table vehicle_details add primary key(v_id)";
-            statement.executeUpdate(addPrimaryKeyVehicle);
-            //alter table vehicle_details for foreign key
-            String addForeignKey = "alter table vehicle_details add foreign key(customer_id) references customer_details(cust_id)";
-            statement.executeUpdate(addForeignKey);
+//            // drop tables if already exist
+//            String dropTable = "drop table if exists vehicle_details, customer_details";
+//            statement.execute(dropTable);
+//
+//            //create table customer_details
+//
+//            String createCustomerDetails = "create table customer_details (cust_id int, cust_name varchar(255), cust_location varchar(255), cust_email varchar(50), cust_mobile bigint, v_hire_date datetime)";
+//            statement.execute(createCustomerDetails);
+//
+//
+//            //alter table customer_details
+//            String addPrimaryKeyCustomerDetails = "alter table customer_details add primary key(cust_id)";
+//            statement.executeUpdate(addPrimaryKeyCustomerDetails);
+//
+//            //create another table vehicle_details
+//            String createVehicle = "create table vehicle_details (v_id int(6), v_name varchar(255), v_registration varchar(255), v_reg_date datetime, customer_id int(5))";
+//            statement.execute(createVehicle);
+//
+//            //alter table vehicle_details for primary key
+//            String addPrimaryKeyVehicle = "alter table vehicle_details add primary key(v_id)";
+//            statement.executeUpdate(addPrimaryKeyVehicle);
+//            //alter table vehicle_details for foreign key
+//            String addForeignKey = "alter table vehicle_details add foreign key(customer_id) references customer_details(cust_id)";
+//            statement.executeUpdate(addForeignKey);
 
 
             System.out.println("how many records you want to insert into your customer_details table");
@@ -110,11 +112,11 @@ public class WriteFromJdbcToExcelDemo {
 
             ResultSet resultSetCustomerDetails = statement.executeQuery("select * from customer_details");
 
-            writeToExcelFileFromJdbc(resultSetCustomerDetails, "CustomerDetails.xslx");
+            writeToExcelFileFromJdbc(resultSetCustomerDetails, "C:\\ZorbaExamSubmission\\JDBCExample\\src\\main\\resources\\CustomerDetails.xlsx");
 
             ResultSet resultSetVehicleDetails = statement.executeQuery("select * from vehicle_details");
 
-            writeToExcelFileFromJdbc(resultSetVehicleDetails, "VehicleDetails.xslx");
+            writeToExcelFileFromJdbc(resultSetVehicleDetails, "C:\\ZorbaExamSubmission\\JDBCExample\\src\\main\\resources\\VehicleDetails.xlsx");
         }
 
 
@@ -197,33 +199,27 @@ public class WriteFromJdbcToExcelDemo {
 
     }
 
-
-
-
-
     public static void writeToExcelFileFromJdbc(ResultSet rs, String fileName) throws SQLException, IOException {
 
 
         ResultSetMetaData rsmd = rs.getMetaData();
 
 
-        List<String> columns = new ArrayList<>() {{
+        List<String> columns = new ArrayList<>();
 
-            for (int i = 0; i <  rsmd.getColumnCount(); i++) {
-
-                add(rsmd.getColumnLabel(i));
-
-            }
-        }};
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
 
 
-        //create sheet from row columns
+                    columns.add(rsmd.getColumnLabel(i));
+
+                }
+            //create sheet from row columns
 
         try (XSSFWorkbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet();
             Row row = sheet.createRow(0);
 
-            for (int i = 0; i <=columns.size(); i++) {
+            for (int i = 0; i < columns.size(); i++) {
                 Cell cell = row.createCell(i);
                 cell.setCellValue(columns.get(i));
 
@@ -231,7 +227,8 @@ public class WriteFromJdbcToExcelDemo {
             }
 
             int rowIndex = 0;
-            while (rs.next()) {
+
+           while (rs.next()) {
 
                 Row rows = sheet.createRow(++rowIndex);
 
@@ -242,17 +239,20 @@ public class WriteFromJdbcToExcelDemo {
                     String values = Objects.toString(rs.getObject(columns.get(i)), "");
 
                     cell.setCellValue(values.toString());
-
-
                 }
 
-                try (FileOutputStream fos = new FileOutputStream(fileName)) {
-                    workbook.write(fos);
 
-
-                }
             }
-        } catch (IOException e) {
+            try (FileOutputStream fos = new FileOutputStream(fileName) ){
+                workbook.write(fos);
+                System.out.println("file inseretd: " + fileName);
+
+            }
+            catch(IOException e ){
+                e.printStackTrace();
+            }
+        }
+        catch (IOException e) {
             e.printStackTrace();
         } finally {
             rs.close();
