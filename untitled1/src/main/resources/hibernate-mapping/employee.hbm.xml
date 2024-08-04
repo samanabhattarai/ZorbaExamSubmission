@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.hibernateproject.Entity.Employee" table="employee">
+        <!--id we use to declare primary key of a table-->
+        <id name="empId" column="emp_id">
+            <generator class="increment"/>
+        </id>
+        <property name="empName" column="emp_name" length="255" type="java.lang.String"/>
+        <property name="empSalary" column="emp_salary" length="12" type="java.lang.Double"/>
+    </class>
+</hibernate-mapping>
