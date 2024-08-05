@@ -1,6 +1,9 @@
 package com.hibernateproject.Execution;
 
 import com.hibernateproject.Entity.Employee;
+import com.hibernateproject.Entity.Student;
+import com.hibernateproject.Entity.Subject;
+import com.hibernateproject.Entity.Teacher;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -20,11 +23,11 @@ public class XMLBasedHQLExecution {
 
         //Creates Session object
         Session session = sessionFactory.openSession();
-        String selectQuery = "from Employee";
+        String selectQuery = "from Student";
         try {
             Query query = session.createQuery(selectQuery);
-            List<Employee> employeeList = query.list();
-            System.out.println(employeeList);
+            List<Student> studentList = query.list();
+            System.out.println(studentList);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -32,56 +35,33 @@ public class XMLBasedHQLExecution {
                 session.close();
             }
         }
-        //Session object creation
         Session session1 = sessionFactory.openSession();
-        String selectSpecificEmp = "select empName from Employee where empId=:id";
+        String selectQuery1 = "from Teacher";
         try {
-            Query query1 = session1.createQuery(selectSpecificEmp);
-            query1.setParameter("id", 2);
-            String recEmp = (String) query1.getSingleResult();
-            System.out.println(recEmp);
+            Query query1= session.createQuery(selectQuery);
+            List<Teacher> teacherList = query1.list();
+            System.out.println(teacherList);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (session1 != null) {
-                session1.close();
+            if (session != null) {
+                session.close();
             }
         }
-
-        //Session object creation
-        Session session3 = sessionFactory.openSession();
-        Transaction tx = null;
-        String updateEmp = "update Employee set empName = :newName where empId = :empId";
-        try {
-            tx = session3.beginTransaction();
-            Query query4 = session3.createQuery(updateEmp);
-            query4.setParameter("newName", "Anil");
-            query4.setParameter("empId", 2);
-            int noOfRows = query4.executeUpdate();
-            System.out.println(noOfRows + " row updated");
-            tx.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            tx.rollback();
-        } finally {
-            if (session3 != null) {
-                session3.close();
-            }
-        }
-
-        //Session object creation
         Session session2 = sessionFactory.openSession();
-        String selectEmp = "select empName from Employee";
+        String selectQuery2 = "from Subject";
         try {
-            Query query2 = session2.createQuery(selectEmp);
-            List<String> allEmpNames = query2.list();
-            System.out.println(allEmpNames);
+            Query query1= session.createQuery(selectQuery);
+            List<Subject> teacherList = query1.list();
+            System.out.println(teacherList);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (session2 != null) {
-                session2.close();
+            if (session != null) {
+                session.close();
             }
         }
+
+
     }
 }

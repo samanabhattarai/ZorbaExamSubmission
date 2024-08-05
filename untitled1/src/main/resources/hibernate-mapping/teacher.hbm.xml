@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.hibernateproject.Entity.Teacher" table="teacher">
+        <!--id we use to declare primary key of a table-->
+        <id name="teacherId" column="teacher_id">
+            <generator class="increment"/>
+        </id>
+        <property name="teacherName" column="teacher_name" length="255" type="java.lang.String"/>
+        <property name="teacherQualification" column="teacher_qualification" length="255" type="java.lang.String"/>
+        <property name="experienceOfTeaching" column="experience_OfTeaching" length="25" type="java.lang.Integer"/>
+        <property name="studentId" column="student_id" length="25" type="java.lang.Integer"/>
+
+
+
+    </class>
+</hibernate-mapping>

@@ -1,11 +1,13 @@
 package com.hibernateproject.Execution;
 
-import com.hibernateproject.Entity.Department;
-import com.hibernateproject.Entity.Employee;
+import com.hibernateproject.Entity.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class XMLBasedExecution {
     public static void main(String[] args) {
@@ -22,85 +24,137 @@ public class XMLBasedExecution {
         //Declare transaction Object
         Transaction tx = null;
 
-        //inserting employee data to table
-        Employee employee = new Employee();
-        employee.setEmpName("Jack");
-        employee.setEmpSalary(11605.3d);
+        // insert subject data to table
+        Scanner scanner = new Scanner(System.in);
 
-        Employee employee1 = new Employee();
-        employee1.setEmpName("Don");
-        employee1.setEmpSalary(9747.3d);
+        System.out.println("Enter the number of subjects:");
+        int numSubjects = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
 
-        try {
-            tx = session.beginTransaction();
-            //insert the data to employee table
-            session.persist(employee);
-            session.persist(employee1);
-            tx.commit();
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            tx.rollback();
-        } finally {
-            if (session != null) {
-                session.close();
+        for (int i = 0; i < numSubjects; i++) {
+            System.out.println("Enter subject name:");
+            String subName = scanner.nextLine();
+
+            Subject subject = new Subject();
+            subject.setSubjectId(  subject.getSubjectId());
+            subject.setSubjectName(subject.getSubjectName());
+
+            try {
+                tx = session.beginTransaction();
+                //insert the data to employee table
+                session.persist(subject);
+                tx.commit();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                tx.rollback();
+            } finally {
+                if (session != null) {
+                    session.close();
+                }
             }
+
         }
 
-        //Create new Session
-        Session session4 = sessionFactory.openSession();
-
-        //Declare transaction Object
-        Transaction tx2 = null;
-        //insert department data
-        Department department = new Department();
-        department.setDeptName("Science");
-
-        Department dept1 = new Department();
-        dept1.setDeptName("Arts");
-
-        try {
-            tx2 = session4.beginTransaction();
-            //insert the data to department table
-            session4.persist(department);
-            session4.persist(dept1);
-            tx2.commit();
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            tx2.rollback();
-        } finally {
-            if (session4 != null) {
-                session4.close();
-            }
-        }
-
-        Employee receivedEmpObj = new Employee();
-        //fetch data from database
+        //insert student data to table
+         scanner = new Scanner(System.in);
         Session session1 = sessionFactory.openSession();
-        try {
-            receivedEmpObj = session1.get(Employee.class, 4); // select * from employee where emp_id = 1;
-            System.out.println(receivedEmpObj.getEmpName());
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        } finally {
-            if (session1 != null) {
-                session1.close();
+
+        System.out.println("Enter the number of students:");
+        int numStudents = scanner.nextInt();
+        scanner.nextLine(); // Consume the newline character
+
+        List<Subject> subjects = session.createQuery("FROM Subject", Subject.class).list();
+
+        for (int i = 0; i < numStudents; i++) {
+            System.out.println("Enter student name:");
+            String studName = scanner.nextLine();
+
+            System.out.println("Enter student roll number:");
+            int studRollNumber = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            System.out.println("Available subjects:");
+            for (int j = 0; j < subjects.size(); j++) {
+                System.out.println((j + 1) + ". " + subjects.get(j).getSubjectName());
+            }
+
+            System.out.println("Choose a subject (enter the number):");
+            int subjectChoice = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            Student student = new Student();
+            student.setStudentName(student.getStudentName());
+            student.setStudentRollNumber(student.getStudentRollNumber());
+            student.setSubjectId(student.getSubjectId());
+
+            try {
+                tx = session.beginTransaction();
+                //insert the data to employee table
+                session1.persist(student);
+                tx.commit();
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+                tx.rollback();
+            } finally {
+                if (session != null) {
+                    session.close();
+                }
+            }
+
+        }
+
+            //insert into teacher table
+             scanner = new Scanner(System.in);
+
+        Session session2 = sessionFactory.openSession();
+
+            System.out.println("Enter the number of teachers:");
+            int numTeachers = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+
+            List<Subject> subject = session.createQuery("FROM Subject", Subject.class).list();
+
+            for (int k = 0; k < numTeachers; k++) {
+                System.out.println("Enter teacher name:");
+                String teacherName = scanner.nextLine();
+
+                System.out.println("Enter teacher qualification:");
+                String teacherQualification = scanner.nextLine();
+
+                System.out.println("Enter teacher experience of teaching:");
+                int experienceOfTeaching = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+
+                System.out.println("Available subjects:");
+                for (int j = 0; j < subjects.size(); j++) {
+                    System.out.println((j + 1) + ". " + subjects.get(j).getSubjectName());
+                }
+
+                System.out.println("Choose a subject (enter the number):");
+                int subjectChoice1 = scanner.nextInt();
+                scanner.nextLine();
+
+                Teacher teacher = new Teacher();
+                teacher.setTeacherName(teacherName);
+                teacher.setTeacherQualification(teacherQualification);
+                teacher.setExperienceOfTeaching(experienceOfTeaching);
+                teacher.setStudentId(subjectChoice1);
+
+                try {
+                    tx = session.beginTransaction();
+                    //insert the data to employee table
+                    session2.persist(teacher);
+                    tx.commit();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                    tx.rollback();
+                } finally {
+                    if (session != null) {
+                        session.close();
+                    }
+                }
+
+            }
             }
         }
 
-        //Delete data from database
-        Session session2 = sessionFactory.openSession();
-        Transaction tx1 = null;
-        try {
-            tx1 = session2.beginTransaction();
-            //session2.delete(receivedEmpObj);
-            tx1.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            tx.rollback();
-        } finally {
-            if (session2 != null) {
-                session2.close();
-            }
-        }
-    }
-}
