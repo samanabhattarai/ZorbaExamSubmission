@@ -1,5 +1,6 @@
 package com.hibernateexam.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Employee {
@@ -55,6 +56,9 @@ public class Employee {
     }
 
     public Set<Skill> getSkills() {
+        if(skills == null){
+            skills = new HashSet<>();
+        }
         return skills;
     }
 

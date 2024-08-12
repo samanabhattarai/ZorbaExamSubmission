@@ -13,9 +13,8 @@ import org.hibernate.cfg.Configuration;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class EmployeeSkillExecution {
@@ -24,25 +23,26 @@ public class EmployeeSkillExecution {
 
         //file read
 
-        FileInputStream fileInputStream = new FileInputStream("employees.xlsx");
+        FileInputStream fileInputStream = new FileInputStream("C:\\ZorbaExamSubmission\\HibernateExam110424\\src\\main\\resources\\Exam_info.xlsx");
         XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
         Sheet sheet = workbook.getSheetAt(0);
 
         Set<Employee> employees = new HashSet<>();
-        List<Skill> skills = new ArrayList<>();
-        List<Skill> employeeSkills = new ArrayList<>();
+        Set<Skill> skills = new HashSet<>();
 
         // Read employee data
+        // skip first row as header
         for (Row row : sheet) {
             Cell cell = row.getCell(0);
-            if (cell != null) {
+            if (cell != null && row.getRowNum() > 0) {
                 Employee employee = new Employee();
                 employee.setEmployeeId((int) cell.getNumericCellValue());
                 employee.setEmployeeName(row.getCell(1).getStringCellValue());
                 employee.setEmployeeAddress(row.getCell(2).getStringCellValue());
                 employee.setEmployeeEmail(row.getCell(3).getStringCellValue());
-                employee.setEmployeeExperience((int) cell.getNumericCellValue());
-
+                employee.setEmployeeExperience((int) row.getCell(4).getNumericCellValue());
+                System.out.println("Employee: " + employee);
+                employees.add(employee);
             }
         }
 
@@ -50,15 +50,40 @@ public class EmployeeSkillExecution {
         sheet = workbook.getSheetAt(1);
         for (Row row : sheet) {
             Cell cell = row.getCell(0);
-            if (cell != null) {
+            if (cell != null && row.getRowNum() > 0) {
                 Skill skill = new Skill();
                 skill.setSkillId((int) cell.getNumericCellValue());
                 skill.setSkillName(row.getCell(1).getStringCellValue());
+                // read other columns
+                System.out.println("Skill: " + skill);
                 skills.add(skill);
             }
         }
 
+        // Read employee-skill mapping data
+        sheet = workbook.getSheetAt(2);
+        for (Row row : sheet) {
+            Cell cell = row.getCell(0);
+            if (cell != null && row.getRowNum() > 0) {
+                int employeeId = (int) cell.getNumericCellValue();
+                int skillId = (int) row.getCell(1).getNumericCellValue();
+                System.out.println("Employee id: " + employeeId + " Skill id: " + skillId);
+                for (Employee emp : employees) {
+                    if (emp.getEmployeeId() == employeeId) {
+                        Skill sk = skills.stream().anyMatch(skill -> skill.getSkillId() == skillId) ? skills.stream().filter(skill -> skill.getSkillId() == skillId).findFirst().get() : null;
+                        if(sk != null) {
+                            emp.getSkills().add(sk);
+                            sk.getEmployees().add(emp);
+                        }
+                    }
+                }
+            }
 
+        }
+        // Just see the data
+        for (Skill skill : skills) {
+            System.out.println("Skill id " + skill.getSkillId() + " employees " + skill.getEmployees());
+        }
         // Save data to database using Hibernate
         Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
@@ -70,9 +95,7 @@ public class EmployeeSkillExecution {
         Session session = sessionFactory.openSession();
 
         //Declare transaction Object
-        Transaction tx = null;
-
-        tx = session.beginTransaction();
+        Transaction tx = session.beginTransaction();
         try {
             for (Employee employee : employees) {
                 session.persist(employee);
@@ -80,22 +103,19 @@ public class EmployeeSkillExecution {
 
             for (Skill skill : skills) {
                 session.persist(skill);
-
-                session.getTransaction().commit();
             }
-        }
-        catch(Exception e)
-        {
+
+            session.getTransaction().commit();
+
+        } catch (Exception e) {
             tx.rollback();
             e.printStackTrace();
             System.out.println(e.getMessage());
 
 
+        } finally {
+
+            session.close();
         }
-
-        finally {
-
-                session.close();}
     }
-
 }
