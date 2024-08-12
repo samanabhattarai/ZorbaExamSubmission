@@ -14,7 +14,6 @@ import org.hibernate.cfg.Configuration;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 public class EmployeeSkillExecution {
@@ -70,20 +69,13 @@ public class EmployeeSkillExecution {
                 System.out.println("Employee id: " + employeeId + " Skill id: " + skillId);
                 for (Employee emp : employees) {
                     if (emp.getEmployeeId() == employeeId) {
-                        Skill sk = skills.stream().anyMatch(skill -> skill.getSkillId() == skillId) ? skills.stream().filter(skill -> skill.getSkillId() == skillId).findFirst().get() : null;
-                        if(sk != null) {
-                            emp.getSkills().add(sk);
-                            sk.getEmployees().add(emp);
-                        }
+                        emp.getSkills().add(skills.stream().filter(skill -> skill.getSkillId() == skillId).findFirst().get());
                     }
                 }
             }
 
         }
         // Just see the data
-        for (Skill skill : skills) {
-            System.out.println("Skill id " + skill.getSkillId() + " employees " + skill.getEmployees());
-        }
 
         for(Employee emp : employees){
             System.out.println("Employee id " + emp.getEmployeeId() + " skills " + emp.getSkills());
@@ -102,8 +94,13 @@ public class EmployeeSkillExecution {
         //Declare transaction Object
         Transaction tx = session.beginTransaction();
         try {
-            for (Employee employee : employees) {
+
+            for(Employee employee : employees){
                 session.persist(employee);
+            }
+
+            for(Skill skill : skills){
+                session.persist(skill);
             }
 
             session.getTransaction().commit();

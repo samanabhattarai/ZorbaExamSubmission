@@ -8,7 +8,7 @@
         </id>
         <property name="skillName" column="skill_name"/>
 
-        <set name="employees" table="employee-skill-mapping" lazy="true" cascade="all">
+        <set name="employees" table="employee_skill_mapping" lazy="true" cascade="all">
             <key>
                 <column name="skill_id"/>
             </key>

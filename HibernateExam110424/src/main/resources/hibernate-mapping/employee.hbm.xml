@@ -12,7 +12,7 @@
         <property name="employeeEmail" column="employee_email"/>
         <property name="employeeExperience" column="employee_experience"/>
 
-        <set name="skills" table="employee-skill-mapping" lazy="true" cascade="all">
+        <set name="skills" table="employee_skill_mapping" lazy="true" cascade="all">
             <key>
                 <column name="employee_id"/>
             </key>
