@@ -35,9 +35,7 @@
 
         <!--Helps to configure the mapping file to hibernate-->
         <mapping resource="hibernate-mapping/employee.hbm.xml"/>
-        <mapping resource="hibernate-mapping/department.hbm.xml"/>
-        <mapping resource="hibernate-mapping/student.hbm.xml"/>
-        <mapping resource="hibernate-mapping/teacher.hbm.xml"/>
-        <mapping resource="hibernate-mapping/subject.hbm.xml"/>
+        <mapping resource="hibernate-mapping/skill.hbm.xml"/>
+
     </session-factory>
 </hibernate-configuration>

@@ -36,8 +36,7 @@ public class XMLBasedExecution {
             String subName = scanner.nextLine();
 
             Subject subject = new Subject();
-            subject.setSubjectId(  subject.getSubjectId());
-            subject.setSubjectName(subject.getSubjectName());
+            subject.setSubjectName(subName);
 
             try {
                 tx = session.beginTransaction();
@@ -63,7 +62,7 @@ public class XMLBasedExecution {
         int numStudents = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
 
-        List<Subject> subjects = session.createQuery("FROM Subject", Subject.class).list();
+       // List<Subject> subjects = session.createQuery("FROM Subject", Subject.class).list();
 
         for (int i = 0; i < numStudents; i++) {
             System.out.println("Enter student name:");
@@ -73,23 +72,22 @@ public class XMLBasedExecution {
             int studRollNumber = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
 
-            System.out.println("Available subjects:");
-            for (int j = 0; j < subjects.size(); j++) {
-                System.out.println((j + 1) + ". " + subjects.get(j).getSubjectName());
-            }
+//            System.out.println("Available subjects:");
+//            for (int j = 0; j < subjects.size(); j++) {
+//                System.out.println((j + 1) + ". " + subjects.get(j).getSubjectName());
+//            }
 
             System.out.println("Choose a subject (enter the number):");
             int subjectChoice = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
 
             Student student = new Student();
-            student.setStudentName(student.getStudentName());
-            student.setStudentRollNumber(student.getStudentRollNumber());
-            student.setSubjectId(student.getSubjectId());
+            student.setStudentName(studName);
+            student.setStudentRollNumber(studRollNumber);
+        /*    student.setSubjectId(subjectChoice);*/
 
             try {
                 tx = session.beginTransaction();
-                //insert the data to employee table
                 session1.persist(student);
                 tx.commit();
             } catch (Exception e) {
@@ -125,10 +123,10 @@ public class XMLBasedExecution {
                 int experienceOfTeaching = scanner.nextInt();
                 scanner.nextLine(); // Consume the newline character
 
-                System.out.println("Available subjects:");
-                for (int j = 0; j < subjects.size(); j++) {
-                    System.out.println((j + 1) + ". " + subjects.get(j).getSubjectName());
-                }
+//                System.out.println("Available subjects:");
+//                for (int j = 0; j < subjects.size(); j++) {
+//                    System.out.println((j + 1) + ". " + subjects.get(j).getSubjectName());
+//                }
 
                 System.out.println("Choose a subject (enter the number):");
                 int subjectChoice1 = scanner.nextInt();
@@ -138,7 +136,7 @@ public class XMLBasedExecution {
                 teacher.setTeacherName(teacherName);
                 teacher.setTeacherQualification(teacherQualification);
                 teacher.setExperienceOfTeaching(experienceOfTeaching);
-                teacher.setStudentId(subjectChoice1);
+                //teacher.setStudentId(subjectChoice1);
 
                 try {
                     tx = session.beginTransaction();
