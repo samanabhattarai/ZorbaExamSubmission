@@ -84,6 +84,11 @@ public class EmployeeSkillExecution {
         for (Skill skill : skills) {
             System.out.println("Skill id " + skill.getSkillId() + " employees " + skill.getEmployees());
         }
+
+        for(Employee emp : employees){
+            System.out.println("Employee id " + emp.getEmployeeId() + " skills " + emp.getSkills());
+        }
+
         // Save data to database using Hibernate
         Configuration configuration = new Configuration();
         configuration.configure("hibernate.cfg.xml");
@@ -99,10 +104,6 @@ public class EmployeeSkillExecution {
         try {
             for (Employee employee : employees) {
                 session.persist(employee);
-            }
-
-            for (Skill skill : skills) {
-                session.persist(skill);
             }
 
             session.getTransaction().commit();

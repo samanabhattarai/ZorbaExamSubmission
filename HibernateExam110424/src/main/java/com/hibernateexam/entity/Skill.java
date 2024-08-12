@@ -47,7 +47,6 @@ public class Skill {
         return "Skill{" +
                 "skillId=" + skillId +
                 ", skillName='" + skillName + '\'' +
-                ", employees=" + employees +
                 '}';
     }
 

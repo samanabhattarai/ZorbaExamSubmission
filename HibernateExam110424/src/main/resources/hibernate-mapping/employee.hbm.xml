@@ -5,7 +5,6 @@
 <hibernate-mapping>
     <class name="com.hibernateexam.entity.Employee" table="employee">
         <id name="employeeId" column="employee_id">
-            <generator class="increment"/>
         </id>
         <property name="employeeName" column="employee_name"/>
         <property name="employeeAddress" column="employee_address"/>
