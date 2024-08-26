@@ -1,0 +1,41 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation = "http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd" default-init-method="init" default-destroy-method="destroy">
+
+    <bean id="balcony" class="com.spring.examples.dependency_injection.constructor_DI_XML.Balcony"/>
+
+    <bean name="rentOfOneBHKFlat" class="com.spring.examples.dependency_injection.constructor_DI_XML.RentOfOneBHKFlat"/>
+
+    <bean name="rentOfTwoBHKFlat" class="com.spring.examples.dependency_injection.constructor_DI_XML.RentOfTwoBHKFlat">
+        <constructor-arg ref="balcony" name="balcony"/>
+    </bean>
+
+    <bean name="rentOfThreeBHKFlat" class="com.spring.examples.dependency_injection.constructor_DI_XML.RentOfThreeBHKFlat">
+        <constructor-arg ref="balcony" name="balcony"/>
+    </bean>
+
+    <bean name="rentOfFlat" class="com.spring.examples.dependency_injection.constructor_DI_XML.RentOfFlat">
+        <constructor-arg ref="rentOfOneBHKFlat" name="rentOfOneBHKFlat"/>
+        <constructor-arg ref="rentOfTwoBHKFlat" name="rentOfTwoBHKFlat"/>
+        <constructor-arg ref="rentOfThreeBHKFlat" name="rentOfThreeBHKFlat"/>
+        <property name="noOfPerson" value="3"/>
+    </bean>
+
+    <bean name ="selfOwnedOneBHKFlat" class="com.spring.examples.dependency_injection.constructor_DI_XML.SelfOwnedOneBHKFlat "/>
+    <bean name ="selfOwnedTwoBHKFlat" class="com.spring.examples.dependency_injection.constructor_DI_XML.SelfOwnedTwoBHKFlat "/>
+    <bean name ="selfOwnedThreeBHKFlat" class="com.spring.examples.dependency_injection.constructor_DI_XML.SelfOwnedThreeBHKFlat "/>
+
+    <bean name = "selfownedflat" class ="com.spring.examples.dependency_injection.constructor_DI_XML.SelfOwnedFlat" autowire="constructor">
+        <constructor-arg name="length" value="10"/>
+        <constructor-arg name="breadth" value="8"/>
+        <constructor-arg name="height" value="9"/>
+    </bean>
+
+
+    <bean id="property" class="com.spring.examples.dependency_injection.constructor_DI_XML.Property">
+        <constructor-arg  ref="rentOfFlat" name="rentOfFlat"/>
+        <constructor-arg  ref="selfownedflat" name="selfOwnedFlat"/>
+    </bean>
+
+</beans>
