@@ -1,13 +1,14 @@
 package com.springmvc.model;
 
+import lombok.Data;
 
-public class Inventory {
-
-    private int inventoryId;
+@Data
+public class InventoryModel {
+    private Integer inventoryId;
     private String category;
     private String name;
-    private int quantity;
-    private double price;
+    private Integer quantity;
+    private Double price;
     private String image;
     private String description;
 }

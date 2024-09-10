@@ -18,9 +18,12 @@
         <input type="text" name="userName" id="userName"><br><br>
         <label for="password">Password:</label>
         <input type="password" name="password" id ="password"><br><br>
+
         <label for="role">Role:</label>
         <input type="text" name="role" id="role" value="Vendor" readonly><br><br>
+
         <input  type="hidden" name="roleName" id="roleName" value="VENDOR">
+
         <input type="submit" value="Login">
     </form>
 </body>

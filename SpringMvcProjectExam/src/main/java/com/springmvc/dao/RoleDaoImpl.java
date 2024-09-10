@@ -63,10 +63,7 @@ public class RoleDaoImpl implements RoleDao {
     } RoleModel roleModel = new RoleModel ();
         Session session = null;
 
-
-
-
-    @Override
+        @Override
     public void rollBack (Transaction tx) {
         if(tx != null ) {
             try {
