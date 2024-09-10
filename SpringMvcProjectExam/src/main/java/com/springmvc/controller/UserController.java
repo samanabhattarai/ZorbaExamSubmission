@@ -1,5 +1,6 @@
 package com.springmvc.controller;
 import com.springmvc.model.AddRole;
+import com.springmvc.model.RoleModel;
 import com.springmvc.model.UserModel;
 import com.springmvc.service.UserService;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -110,7 +111,7 @@ public class UserController {
         return  viewDeleteRolesPage(userId, model);
     }
 
-    @GetMapping("/downloadExcel")
+    @GetMapping("/users/download")
     public void downloadExcel(HttpServletResponse response) throws IOException {
         List<UserModel> users = userService.getUsers();
 
@@ -139,8 +140,7 @@ public class UserController {
             row.createCell(3).setCellValue(userModel.getMobile ());
             row.createCell(4).setCellValue(userModel.getUserName ());
             row.createCell(5).setCellValue(userModel.getPassword ());
-            row.createCell(6).setCellValue(userModel.getRoles ().toString ());
-
+            row.createCell(6).setCellValue(userModel.getRoles().stream ().map (RoleModel::getRoleName).collect(Collectors.joining (",")));
         }
 
         response.setContentType("application/vnd.ms-excel");

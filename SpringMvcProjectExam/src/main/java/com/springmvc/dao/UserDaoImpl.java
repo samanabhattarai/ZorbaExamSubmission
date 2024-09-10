@@ -188,7 +188,8 @@ public class UserDaoImpl implements UserDao {
             query.setString("userName", userName);
             query.setString("password", password);
             User user = (User) query.uniqueResult();
-            userModel = getUserModel (user);
+            if(user != null)
+                userModel = getUserModel (user);
         } catch (Exception e) {
             System.err.println (e.getMessage ());
         } finally {

@@ -31,6 +31,7 @@
                 <beans:prop key="hibernate.hbm2ddl.auto">update</beans:prop>
                 <beans:prop key="hibernate.show_sql">true</beans:prop>
                 <beans:prop key="hibernate.format_sql">true</beans:prop>
+                <beans:prop key="hibernate.">true</beans:prop>
                 <beans:prop key="hibernate.connection.pool_size">10</beans:prop>
             </beans:props>
         </beans:property>
@@ -38,6 +39,8 @@
             <beans:list>
                 <beans:value>com.springmvc.entity.Role</beans:value>
                 <beans:value>com.springmvc.entity.User</beans:value>
+                <beans:value>com.springmvc.entity.InventoryCategory</beans:value>
+                <beans:value>com.springmvc.entity.Inventory</beans:value>
             </beans:list>
         </beans:property>
     </beans:bean>
@@ -48,7 +51,9 @@
     <beans:bean name="roleDAO" class="com.springmvc.dao.RoleDaoImpl">
         <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
     </beans:bean>
-
+    <beans:bean name="inventoryDAO" class="com.springmvc.dao.InventoryDaoImpl">
+        <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
+    </beans:bean>
 
     <beans:bean name="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <beans:property name="sessionFactory" ref="hibernateSessionFactory"/>

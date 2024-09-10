@@ -43,8 +43,6 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public RoleModel getRoleByName(String roleName) {
-        RoleModel roleModel = new RoleModel ();
-        Session session = null;
         try {
             session = sessionFactory.openSession();
             Query query = session.createQuery("FROM Role r where r.roleName = :roleName");
@@ -62,7 +60,9 @@ public class RoleDaoImpl implements RoleDao {
         }
         return roleModel;
 
-    }
+    } RoleModel roleModel = new RoleModel ();
+        Session session = null;
+
 
 
 

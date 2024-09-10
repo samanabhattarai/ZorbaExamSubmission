@@ -22,6 +22,7 @@
         <th>Username</th>
         <th>Password</th>
         <th>Roles</th>
+        <th>Download</th>
     </tr>
     <c:forEach items="${users}" var="userModel">
         <tr>
@@ -40,7 +41,8 @@
                         </c:forEach>
                     </a>
                 </c:if>
-          </td>
+            </td>
+            <td><a href="/SpringWebMvcExam_war/users/download">Download</a></td>
         </tr>
     </c:forEach>
 </table>
