@@ -41,6 +41,7 @@
                 <beans:value>com.springmvc.entity.User</beans:value>
                 <beans:value>com.springmvc.entity.InventoryCategory</beans:value>
                 <beans:value>com.springmvc.entity.Inventory</beans:value>
+                <beans:value>com.springmvc.entity.CustomerCart</beans:value>
             </beans:list>
         </beans:property>
     </beans:bean>
@@ -54,11 +55,19 @@
     <beans:bean name="inventoryDAO" class="com.springmvc.dao.InventoryDaoImpl">
         <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
     </beans:bean>
+    <beans:bean name="customerCartDao" class="com.springmvc.dao.CustomerCartDaoImpl">
+        <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
+    </beans:bean>
 
     <beans:bean name="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <beans:property name="sessionFactory" ref="hibernateSessionFactory"/>
     </beans:bean>
 
+    <beans:bean name="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <beans:property name="maxUploadSize" value="20971520"/>
+        <beans:property name="maxUploadSizePerFile" value="20971520"/>
+        <beans:property name="defaultEncoding" value="UTF-8"/>
+    </beans:bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
 

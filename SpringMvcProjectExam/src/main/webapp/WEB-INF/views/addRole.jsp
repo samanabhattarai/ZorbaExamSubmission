@@ -17,7 +17,7 @@
         <label for="roleNames">Roles</label>
         <select name="roleNames" id="roleNames" multiple>
             <option value="ADMIN">ADMIN</option>
-            <option value="USER">USER</option>
+            <option value="CUSTOMER">CUSTOMER</option>
             <option value="VENDOR">VENDOR</option>
         </select>
     </div>

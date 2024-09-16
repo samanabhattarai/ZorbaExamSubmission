@@ -38,6 +38,7 @@
         <li><a href="/SpringWebMvcExam_war/users/user/${user.userId}">User</a></li>
         <li><a href="/SpringWebMvcExam_war/users/register">Register User</a></li>
         <li><a href="/SpringWebMvcExam_war/users/">All Users</a></li>
+        <li><a href="/SpringWebMvcExam_war/uploadInventory">Uplaod Inventory</a></li>
     </ul>
 
 </body>

@@ -198,6 +198,27 @@ public class UserDaoImpl implements UserDao {
         return userModel;
     }
 
+    @Override
+    public UserModel getUserByUserName (String userName) {
+        UserModel userModel = null;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession ();
+            String userQuery = "FROM User u where u.userName = :userName";
+            Query query = session.createQuery (userQuery);
+            query.setString("userName", userName);
+            User user = (User) query.uniqueResult();
+            if(user != null)
+                userModel = getUserModel (user);
+        } catch (Exception e) {
+            System.err.println (e.getMessage ());
+        } finally {
+            closeSession (session);
+        }
+        return userModel;
+    }
+
+
     public void rollBack (Transaction tx) {
         if (tx != null) {
             try {

@@ -16,4 +16,6 @@ public interface UserDao{
     void closeSession(Session session);
     String removeRolesFromUser (int userId, String[] roleNames);
     UserModel getUserByUserNameAndPassword (String userName, String password);
+
+    UserModel getUserByUserName (String userName);
 }
