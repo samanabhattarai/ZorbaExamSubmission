@@ -4,11 +4,11 @@ import lombok.Data;
 
 @Data
 public class InventoryModel {
-    private Integer inventoryId;
+    private int inventoryId;
     private String category;
     private String name;
-    private Integer quantity;
-    private Double price;
+    private int quantity;
+    private double price;
     private String image;
     private String description;
 }

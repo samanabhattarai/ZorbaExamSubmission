@@ -1,13 +1,17 @@
 package com.springmvc.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Data
 @Entity
-@Table(name = "inventor")
+@EqualsAndHashCode(exclude = "inventoryCategory")
+@Table(name = "inventory")
 public class Inventory {
 
     @Id
@@ -17,7 +21,6 @@ public class Inventory {
 
     @Column(name="inventory_name")
     private String name;
-
     @Column(name="inventory_quantity")
     private int quantity;
 
@@ -45,4 +48,8 @@ public class Inventory {
         this.description = description;
         this.inventoryCategory = inventoryCategory;
     }
+
+    @OneToMany(mappedBy = "inventory")
+    private Set<CustomerCart> carts = new HashSet<> ();
+
 }

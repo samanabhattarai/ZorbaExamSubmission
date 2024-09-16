@@ -1,12 +1,14 @@
 package com.springmvc.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@EqualsAndHashCode(exclude = "inventories")
 @Entity
 @Table(name = "inventory_category")
 public class InventoryCategory {
