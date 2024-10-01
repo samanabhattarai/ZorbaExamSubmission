@@ -1,17 +1,21 @@
 package com.springmvc.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 
 @Data
-@EqualsAndHashCode(exclude = "roles")
+@EqualsAndHashCode(exclude = {"roles", "userLoginAudits", "carts"})
 @Entity
 @Table(name = "user_info")
-public class User {
+public class User  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,12 +32,12 @@ public class User {
     private String mobile;
 
     @Column(name = "username")
-    private String userName;
+    private String username;
 
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<CustomerCart> carts = new HashSet<> ();
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -43,16 +47,18 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    public User(String name, String email, String mobile, String userName, String password) {
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<UserLoginAudit> userLoginAudits = new HashSet<> ();
+
+    public User(){
+    }
+
+    public User(String name, String email, String mobile, String username, String password) {
         this.name = name;
         this.email = email;
         this.mobile = mobile;
-        this.userName = userName;
+        this.username = username;
         this.password = password;
-
-    }
-
-    public User(){
     }
 
 }

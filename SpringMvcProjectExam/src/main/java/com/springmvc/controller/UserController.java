@@ -3,6 +3,7 @@ import com.springmvc.model.AddRole;
 import com.springmvc.model.RoleModel;
 import com.springmvc.model.UserModel;
 import com.springmvc.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@Slf4j
 public class UserController {
 
     public static final String VIEW_USERS = "viewUsers";
@@ -29,13 +31,15 @@ public class UserController {
     }
 
 
-    @PostMapping("/users")
+    @PostMapping("/users/register")
     public String saveUser (@ModelAttribute("userModel") UserModel userModel, Model model) {
-        System.out.println ("Called from post " + userModel);
+        log.info ("Registering a new user {}", userModel);
+
         if (userModel.getEmail () == null || !userModel.getEmail ().contains ("@")) {
             model.addAttribute ("message", "Invalid email format!");
             return REGISTER_USER;
         }
+
         if (userModel.getMobile () == null || userModel.getMobile ().length () < 10) {
             model.addAttribute ("message", "Mobile number should be exactly 10 digits!");
             return REGISTER_USER;
@@ -46,11 +50,13 @@ public class UserController {
         }
         String response = userService.saveUserData(userModel);
         model.addAttribute ("message", response);
+        log.info ("Registered a new user {}", response);
         return getAllUser(model);
     }
 
     @GetMapping("/users")
     public String getAllUser (Model model) {
+        log.info ("Getting all users...");
         List<UserModel> userModels = new ArrayList<> (this.userService.getUsers());
         model.addAttribute ("users", userModels);
         return VIEW_USERS;
@@ -138,7 +144,7 @@ public class UserController {
             row.createCell(1).setCellValue(userModel.getName ());
             row.createCell(2).setCellValue(userModel.getEmail ());
             row.createCell(3).setCellValue(userModel.getMobile ());
-            row.createCell(4).setCellValue(userModel.getUserName ());
+            row.createCell(4).setCellValue(userModel.getUsername ());
             row.createCell(5).setCellValue(userModel.getPassword ());
             row.createCell(6).setCellValue(userModel.getRoles().stream ().map (RoleModel::getRoleName).collect(Collectors.joining (",")));
         }

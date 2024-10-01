@@ -29,5 +29,9 @@ public class InventoryService {
     public List<InventoryModel> getInventoryByCategory (int categoryId) {
         return inventoryDao.getInventoryByCategory(categoryId);
     }
+
+    public List<InventoryModel> getAllInventory () {
+        return inventoryDao.getAllInventory();
+    }
 }
 

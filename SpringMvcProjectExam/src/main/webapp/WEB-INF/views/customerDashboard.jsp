@@ -5,24 +5,26 @@
 <html>
 <head>
     <title>Customer Dashboard</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/application.css">
 </head>
 <body>
 
-<h2>Welcome to customer dashboard: ${user.getName()} !</h2>
+<h2 class="h3 mb-3 fw-normal">Welcome to customer dashboard: ${user.getName()} !</h2>
 
 <c:if test="${message != null}">
     ${message}
 </c:if>
 <br />
 
-<form action="/SpringWebMvcExam_war/customer/${user.getUserId()}/addToCart" method="POST" name="addToCart">
+<form action="/SpringWebMvcExam_war/customer/${user.getUserId()}/addToCart" method="POST" name="addToCart" class="form-signin w-100 m-auto">
     <label for="categoryId">Select Category:</label>
-    <select name="categoryId" id="categoryId">
+    <select name="categoryId" class="form-control" id="categoryId">
        ${categoryList}
     </select>
 
     <c:if test="${inventoryList != null}">
-        <table>
+    <table border="1" class="table table-primary table-striped-columns">
             <tr>
                 <th>Select Product</th>
                 <th>Inventory Name</th>
@@ -34,7 +36,7 @@
     </c:if>
     <c:forEach var="inventory" items="${inventoryList}" varStatus="loop">
         <tr>
-            <td><input type="radio" name="inventoryId" value="${inventory.inventoryId}" id="inventoryId-${loop.index}" /></td>
+            <td><input type="radio" name="inventoryId" class="form-control" value="${inventory.inventoryId}" id="inventoryId-${loop.index}" /></td>
             <td>${inventory.name}</td>
             <td>${inventory.quantity}</td>
             <td>${inventory.price}</td>
@@ -52,21 +54,26 @@
     <c:choose>
         <c:when test="${inventoryList == null}">
             <br/>
-            <input type="submit" value="Select Product" />
+            <input type="submit" class="form-control" value="Select Product" />
         </c:when>
         <c:otherwise>
-            <input type="submit" value="Add to Cart" />
+            <input type="submit" class="form-control" value="Add to Cart" />
         </c:otherwise>
     </c:choose>
 
 </form>
 
 <ul>
-    <li><a href="/SpringWebMvcExam_war/users/user/${user.userId}">User</a></li>
-    <li><a href="/SpringWebMvcExam_war/users/register">Register User</a></li>
-    <li><a href="/SpringWebMvcExam_war/users/">All Users</a></li>
-    <li><a href="/SpringWebMvcExam_war/uploadInventory">Add-to-Cart</a></li>
+    <li><p class="mt-5 mb-3"><a href="/SpringWebMvcExam_war/users/user/${user.userId}">User</a></p></li>
+    <li><p class="mt-5 mb-3"><a href="/SpringWebMvcExam_war/users/register">Register User</a></p></li>
+    <li><p class="mt-5 mb-3"><a href="/SpringWebMvcExam_war/users/">All Users</a></p></li>
+    <li><p class="mt-5 mb-3"><a href="/SpringWebMvcExam_war/uploadInventory">Add-to-Cart</a></p></li>
+
 </ul>
 
+<footer>
+
+    <script src="webjars/bootstrap/5.3.3/js/bootstrap.min.js"></script>
+</footer>
 </body>
 </html>

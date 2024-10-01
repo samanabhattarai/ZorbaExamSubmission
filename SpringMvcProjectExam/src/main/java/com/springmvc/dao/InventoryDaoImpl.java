@@ -144,24 +144,34 @@ public class InventoryDaoImpl implements InventoryDao {
         return null;
     }
 
+
+
     @Override
-    public Inventory getInventoryByName (String inventoryName) {
+    public List<InventoryModel> getAllInventory () {
+        String inventoryQuery = "FROM  Inventory I ";
         Session session = null;
+        List<InventoryModel> inventories = new ArrayList<> ();
         try {
             session = sessionFactory.openSession ();
-            Query query = session.createQuery ("FROM  Inventory I where I.name = :name").setString ("name", inventoryName);
-            List<Inventory> inventoryList = (List<Inventory>) query.list ();
-            for (Inventory inventory : inventoryList) {
-                if(inventory.getName ().equals (inventoryName)) {
-                    return inventory;
-                }
+            Query query = session.createQuery (inventoryQuery);
+            List<Inventory> inventoriesFromQuery = (List<Inventory>) query.list();
+            for (Inventory inventory : inventoriesFromQuery) {
+                InventoryModel model = new InventoryModel ();
+                model.setInventoryId (inventory.getInventoryId());
+                model.setName (inventory.getName ());
+                model.setQuantity (inventory.getQuantity ());
+                model.setPrice (inventory.getPrice ());
+                model.setImage (inventory.getImage ());
+                model.setDescription (inventory.getDescription ());
+                model.setCategory(inventory.getInventoryCategory ().getCategoryName ());
+                inventories.add (model);
             }
         } catch (Exception e) {
             e.printStackTrace ();
         } finally {
             closeSession (session);
         }
-        return null;
+        return inventories;
     }
 
     public  InventoryCategory getInventoryCategory (InventoryModel inventoryModel) {

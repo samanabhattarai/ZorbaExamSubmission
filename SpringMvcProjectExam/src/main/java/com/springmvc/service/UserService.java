@@ -4,39 +4,37 @@ import com.springmvc.dao.CustomerCartDao;
 import com.springmvc.dao.InventoryDao;
 import com.springmvc.dao.RoleDao;
 import com.springmvc.dao.UserDao;
-import com.springmvc.entity.CustomerCart;
-import com.springmvc.entity.Inventory;
 import com.springmvc.entity.Role;
-import com.springmvc.model.CategoryInventoryModel;
+import com.springmvc.entity.User;
 import com.springmvc.model.RoleModel;
 import com.springmvc.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
-public class UserService {
-
-    private final UserDao userDAO;
-
-    private final RoleDao roleDAO;
-
-    public UserService (UserDao userDAO, RoleDao roleDAO) {
-        this.userDAO = userDAO;
-        this.roleDAO = roleDAO;
-    }
+public class UserService implements UserDetailsService {
 
 
     @Autowired
-    InventoryDao inventoryDao;
+    private UserDao userDAO;
 
     @Autowired
-    CustomerCartDao customerCartDao;
+    private RoleDao roleDAO;
+
+    @Autowired
+    private CustomerCartDao customerCartDao;
 
     public String saveUserData (UserModel userModel) {
         if (userModel.getName () != null && userModel.getEmail () != null && userModel.getMobile () != null
-                && userModel.getUserName () != null && userModel.getPassword () != null) {
+                && userModel.getUsername () != null && userModel.getPassword () != null) {
             //saved data to database
             return userDAO.saveUser (userModel);
         }
@@ -70,4 +68,21 @@ public class UserService {
     public String saveCart(int userId, int inventoryId) {
         return customerCartDao.saveCustomerCart (userId, inventoryId);
     }
+
+
+    @Override
+    public UserDetails loadUserByUsername (String userName) throws UsernameNotFoundException {
+        UserModel user =  userDAO.getUserByUserName (userName);
+        if(user != null){
+            return user;
+        }
+        throw new UsernameNotFoundException("Not found: " + userName);
+    }
+
+    private static Collection<? extends GrantedAuthority> getAuthorities(User user) {
+        String[] userRoles = user.getRoles().stream().map((role) -> "ROLE_"+ role.getRoleName()).toArray(String[]::new);
+        Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(userRoles);
+        return authorities;
+    }
+
 }

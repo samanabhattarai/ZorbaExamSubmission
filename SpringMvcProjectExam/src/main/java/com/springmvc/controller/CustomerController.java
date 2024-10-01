@@ -1,13 +1,11 @@
 package com.springmvc.controller;
 
 import com.springmvc.dao.UserDao;
-import com.springmvc.model.CategoryInventoryModel;
-import com.springmvc.model.CategoryModel;
-import com.springmvc.model.CustomerModel;
-import com.springmvc.model.UserModel;
+import com.springmvc.model.*;
 import com.springmvc.service.InventoryService;
 import com.springmvc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -29,13 +27,9 @@ public class CustomerController {
         this.userDao = userDao;
     }
 
-    @GetMapping(value = "/customer/login")
-    public String login () {
-        return "customerLogin";
-    }
 
     @PostMapping(value = "/customer/login")
-    public String login (@ModelAttribute("customer") CustomerModel customerModel, Model model) {
+    public String login (@ModelAttribute("customer") UserLoginModel customerModel, Model model) {
         if (StringUtils.isEmpty (customerModel.getUserName ())
                 || StringUtils.isEmpty (customerModel.getPassword ())
                 || StringUtils.isEmpty (customerModel.getRoleName ()))
@@ -53,6 +47,7 @@ public class CustomerController {
 
     }
 
+    //@PreAuthorize("hasRole('customer')")
     private String getCustomerLandingPage (Model model, UserModel user, int categoryId) {
         model.addAttribute ("user", user);
         StringBuilder categoryList = new StringBuilder ();

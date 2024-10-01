@@ -4,52 +4,38 @@ import com.springmvc.dao.UserDao;
 
 import com.springmvc.model.InventoryModel;
 import com.springmvc.model.UserModel;
-import com.springmvc.model.VendorModel;
+import com.springmvc.model.UserLoginModel;
 import com.springmvc.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @Controller
 public class VendorController {
-    private final UserDao userDao;
-
-    public VendorController (UserDao userDao) {
-        this.userDao = userDao;
-    }
 
     @Autowired
     InventoryService inventoryService;
 
-    @GetMapping(value = "/vendor/login")
-    public String login () {
-        return "vendorLogin";
+
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR','ROLE_ADMIN')")
+    @GetMapping(value = "/vendors")
+    public String login (Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserModel user = (UserModel) auth.getPrincipal();
+        model.addAttribute ("message", "<h5>Welcome " + user.getName () + "!</h5>");
+        return "addInventory";
     }
 
-    @PostMapping(value = "/vendor/login")
-    public String login (@ModelAttribute("vendor") VendorModel vendorModel, Model model) {
-        if (StringUtils.isEmpty (vendorModel.getUserName ())
-                || StringUtils.isEmpty (vendorModel.getPassword ())
-                || StringUtils.isEmpty (vendorModel.getRoleName ()))
-        {
-                model.addAttribute ("message", "<h5>Please provide proper username and password!</h5>");
-                return "vendorLogin";
-        }
-        UserModel user = userDao.getUserByUserNameAndPassword (vendorModel.getUserName (), vendorModel.getPassword ());
-
-        if (user != null && user.getRoles().stream ().anyMatch (role -> role.getRoleName ().equals (vendorModel.getRoleName()))) {
-            model.addAttribute ("message", "<h5>Welcome " + user.getName () + "!</h5>");
-            return "addInventory";
-        }
-        model.addAttribute ("message", "<h5>Provided wrong login credentials!</h5>");
-        return "vendorLogin";
-
-    }
-
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR','ROLE_ADMIN')")
     @PostMapping("/inventory")
     public String saveInventory (@ModelAttribute("InventoryModel") InventoryModel inventoryModel, Model model) {
         System.out.println ("Data from page " + inventoryModel);
@@ -78,6 +64,14 @@ public class VendorController {
         String response = inventoryService.saveInventory(inventoryModel);
         model.addAttribute("message", response);
         return "addInventory";
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_VENDOR','ROLE_ADMIN')")
+    @GetMapping("/inventory")
+    public String getAllInventory (Model model) {
+        List<InventoryModel> inventoryList = inventoryService.getAllInventory();
+        model.addAttribute("inventoryList", inventoryList);
+        return "viewInventory";
     }
 
 }

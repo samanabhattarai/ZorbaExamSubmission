@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import com.springmvc.entity.User;
 import org.hibernate.Transaction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,8 +20,11 @@ public class UserDaoImpl implements UserDao {
 
     private final SessionFactory sessionFactory;
 
-    UserDaoImpl (SessionFactory sessionFactory) {
+    private final PasswordEncoder passwordEncoder;
+
+    UserDaoImpl (SessionFactory sessionFactory, PasswordEncoder passwordEncoder) {
         this.sessionFactory = sessionFactory;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -30,7 +35,8 @@ public class UserDaoImpl implements UserDao {
         try {
             session = sessionFactory.openSession ();
             tx = session.beginTransaction ();
-            User user = new User (userModel.getName (), userModel.getEmail (), userModel.getMobile (), userModel.getUserName (), userModel.getPassword ());
+            User user = new User (userModel.getName (), userModel.getEmail (), userModel.getMobile (),
+                    userModel.getUsername (), passwordEncoder.encode(userModel.getPassword ()));
             session.persist (user);
             tx.commit ();
         } catch (Exception e) {
@@ -77,7 +83,6 @@ public class UserDaoImpl implements UserDao {
                 UserModel userModel = getUserModel (user);
                 users.add (userModel);
             }
-
         } catch (Exception e) {
             System.err.println (e.getMessage ());
         } finally {
@@ -89,7 +94,7 @@ public class UserDaoImpl implements UserDao {
 
     private static UserModel getUserModel (User user) {
         UserModel userModel = new UserModel ();
-        userModel.setUserName (user.getUserName ());
+        userModel.setUsername (user.getUsername());
         userModel.setEmail (user.getEmail ());
         userModel.setMobile (user.getMobile ());
         userModel.setPassword (user.getPassword ());
@@ -183,9 +188,9 @@ public class UserDaoImpl implements UserDao {
         Session session = null;
         try {
             session = sessionFactory.openSession ();
-            String userQuery = "FROM User u where u.userName = :userName and u.password = :password";
+            String userQuery = "FROM User u where u.username = :username and u.password = :password";
             Query query = session.createQuery (userQuery);
-            query.setString("userName", userName);
+            query.setString("username", userName);
             query.setString("password", password);
             User user = (User) query.uniqueResult();
             if(user != null)
@@ -200,14 +205,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public UserModel getUserByUserName (String userName) {
-        UserModel userModel = null;
         Session session = null;
+        UserModel userModel = null;
         try {
             session = sessionFactory.openSession ();
-            String userQuery = "FROM User u where u.userName = :userName";
+            String userQuery = "FROM User u where u.username = :username";
             Query query = session.createQuery (userQuery);
-            query.setString("userName", userName);
-            User user = (User) query.uniqueResult();
+            query.setString("username", userName);
+            User user =  (User) query.uniqueResult();
             if(user != null)
                 userModel = getUserModel (user);
         } catch (Exception e) {

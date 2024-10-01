@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/mvc"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
-             xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xmlns:tx="http://www.springframework.org/schema/tx"
+             xmlns:aop="http://www.springframework.org/schema/aop" xmlns:mvc="http://www.springframework.org/schema/mvc"
              xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <annotation-driven/>
-
     <context:component-scan base-package="com.springmvc"/>
+    <!--Enable AOP with aspectj-->
+    <aop:aspectj-autoproxy/>
+    <resources mapping="/resources/*" location="classpath:/resources/*" />
+
+    <mvc:resources location = "/WEB-INF/resources/" mapping ="/resources/**" />
+
     <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <beans:property name="prefix" value="/WEB-INF/views/"/>
         <beans:property name="suffix" value=".jsp"/>
     </beans:bean>
 
+    <mvc:resources mapping="/webjars/**"
+                   location="classpath:/META-INF/resources/webjars/"
+                   cache-period="31556926" />
+
+    <mvc:resources mapping="/resources/**"
+                   location="classpath:/WEB-INF/resources/*, /resources/"
+                   cache-period="31556926" />
 
     <beans:bean name="datasource" class="org.apache.commons.dbcp.BasicDataSource">
         <beans:property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
@@ -23,13 +39,15 @@
         <beans:property name="password" value="root"/>
     </beans:bean>
 
+    <beans:bean name="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
     <beans:bean name="hibernateSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
         <beans:property name="dataSource" ref="datasource"/>
         <beans:property name="hibernateProperties">
             <beans:props>
                 <beans:prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</beans:prop>
                 <beans:prop key="hibernate.hbm2ddl.auto">update</beans:prop>
-                <beans:prop key="hibernate.show_sql">true</beans:prop>
+                <beans:prop key="hibernate.show_sql">false</beans:prop>
                 <beans:prop key="hibernate.format_sql">true</beans:prop>
                 <beans:prop key="hibernate.">true</beans:prop>
                 <beans:prop key="hibernate.connection.pool_size">10</beans:prop>
@@ -42,12 +60,15 @@
                 <beans:value>com.springmvc.entity.InventoryCategory</beans:value>
                 <beans:value>com.springmvc.entity.Inventory</beans:value>
                 <beans:value>com.springmvc.entity.CustomerCart</beans:value>
+                <beans:value>com.springmvc.entity.UserLoginAudit</beans:value>
+                <beans:value>com.springmvc.entity.ExecutionAuditCheck</beans:value>
             </beans:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean name="userDAO" class="com.springmvc.dao.UserDaoImpl">
         <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
+        <beans:constructor-arg name="passwordEncoder" ref="passwordEncoder"/>
     </beans:bean>
     <beans:bean name="roleDAO" class="com.springmvc.dao.RoleDaoImpl">
         <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
@@ -56,6 +77,12 @@
         <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
     </beans:bean>
     <beans:bean name="customerCartDao" class="com.springmvc.dao.CustomerCartDaoImpl">
+        <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
+    </beans:bean>
+    <beans:bean name="userLoginAuditDao" class="com.springmvc.dao.UserLoginAuditDAOImpl">
+        <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
+    </beans:bean>
+    <beans:bean name="executionAuditCheckDao" class="com.springmvc.dao.ExecutionAuditCheckDaoImpl">
         <beans:constructor-arg name="sessionFactory" ref="hibernateSessionFactory"/>
     </beans:bean>
 
@@ -70,5 +97,7 @@
     </beans:bean>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>
+
+
 
 </beans:beans>

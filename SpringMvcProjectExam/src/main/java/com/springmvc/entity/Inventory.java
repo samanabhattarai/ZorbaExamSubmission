@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Data
 @Entity
-@EqualsAndHashCode(exclude = "inventoryCategory")
+@EqualsAndHashCode(exclude = {"inventoryCategory", "carts"})
 @Table(name = "inventory")
 public class Inventory {
 
@@ -21,6 +21,7 @@ public class Inventory {
 
     @Column(name="inventory_name")
     private String name;
+
     @Column(name="inventory_quantity")
     private int quantity;
 

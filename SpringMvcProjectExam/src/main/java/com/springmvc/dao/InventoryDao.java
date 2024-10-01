@@ -21,5 +21,6 @@ public interface InventoryDao {
     List<InventoryModel> getInventoryByCategory (int categoryId);
 
     InventoryCategory getCategoryByName (String categoryName);
-    Inventory getInventoryByName (String inventoryName);
+
+    List<InventoryModel> getAllInventory ();
 }
